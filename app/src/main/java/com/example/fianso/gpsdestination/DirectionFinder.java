@@ -16,16 +16,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 class DirectionFinder {
 
 
-
+    // * * * ETAPE  12 ajouter votre clé pour récupérer les données du chemin* * * * * *
     private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?";
-    private static final String GOOGLE_API_KEY = "AIzaSyBJzwkTeSpNVikBsXCXIruRvUIbNQOR9Nw";
+    private static final String GOOGLE_API_KEY = "Inserez votre cléé ici !!!";
     private DirectionFinderListener listener;
     private String origin;
     private String destination;
@@ -48,6 +47,9 @@ class DirectionFinder {
         return DIRECTION_URL_API + "origin=" + urlOrigin + "&destination=" + urlDestination + "&key=" + GOOGLE_API_KEY;
     }
 
+
+    //Télecharger les données Brutes sur l'interface utilisateur obtenu via URL
+
     private class DownloadRawData extends AsyncTask<String, Void, String> {
 
         @Override
@@ -55,7 +57,7 @@ class DirectionFinder {
             String link = params[0];
             try {
                 URL url = new URL(link);
-                InputStream is = url.openConnection().getInputStream();
+                InputStream is = url.openConnection().getInputStream(); // Obtenir les données de la chaine du résultat
                 StringBuffer buffer = new StringBuffer();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
@@ -77,7 +79,7 @@ class DirectionFinder {
         @Override
         protected void onPostExecute(String res) {
             try {
-                parseJSon(res);
+                parseJSon(res);  //aprés le teléchargement complet des données les données vont étre traité et exécuté
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -94,7 +96,7 @@ class DirectionFinder {
         for (int i = 0; i < jsonRoutes.length(); i++) {
             JSONObject jsonRoute = jsonRoutes.getJSONObject(i);
             Route route = new Route();
-
+            //récupérer chaque objet du tableau Routes et le traiter
             JSONObject overview_polylineJson = jsonRoute.getJSONObject("overview_polyline");
             JSONArray jsonLegs = jsonRoute.getJSONArray("legs");
             JSONObject jsonLeg = jsonLegs.getJSONObject(0);
@@ -113,7 +115,7 @@ class DirectionFinder {
 
             routes.add(route);
         }
-
+         //afficher les résultat à mapper
         listener.onDirectionFinderSuccess(routes);
     }
 
